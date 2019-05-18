@@ -48,10 +48,10 @@ def setRelaySpringkler(nyala):
   GPIO.setup(PIN_SPRINGKLER, GPIO.OUT)  # GPIO Assign mode
   if nyala:
       GPIO.output(PIN_SPRINGKLER, GPIO.LOW) # nyala
-      print("kipas hidup")
+      print("Springkler Hidup")
   else:
       GPIO.output(PIN_SPRINGKLER, GPIO.HIGH) # mati
-      print("kipas mati")
+      print("Springkler Mati")
 
 def setRelayAir(nyala):
   firebase.patch('/sensor/relay2', {"manual":True})
@@ -116,7 +116,7 @@ def setPompaMati():
 
 def setAutomasiMetode():
     sensorPH = float (firebase.get('/sensor/ph', 'value'))
-    sensorSuhu = float (firebase.get('/sensor/suhu', 'value'))
+    sensorSuhu = float (firebase.get('/sensor/suhu', 'temp'))
     sensorNutrisi = float (firebase.get('/sensor/tds','value'))
     nutrisi1Tumbuhan = float (firebase.get('/pilihTumbuhan','firstValue'))
     nutrisi2Tumbuhan = float (firebase.get('/pilihTumbuhan','secondValue'))
