@@ -17,7 +17,7 @@ GPIO.setwarnings(False)
 # ===== Definisi Pin GPIO====== #
 GPIO_RELAY = 18
 GPIO_RELAY1 = 27 
-PIN_KIPAS = 24
+PIN_SPRINGKLER = 24
 PIN_AIR = 25
 pin = 17
 
@@ -30,22 +30,8 @@ humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
 # firebase = firebase.FirebaseApplication('https://smart-greenhouse-92747.firebaseio.com/', None)
 
 
-def setSuhuGreenhouse():
+# Function set suhu
 
-  humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-  if humidity is not None and temperature is not None:
-    sleep(0)
-    str_temp = ' {0:0.2f} *C '.format(temperature)  
-
-    str_hum  = ' {0:0.2f} %'.format(humidity)
-    print('Temp={0:0.1f}*C  Humidity={1:0.1f}%'.format(temperature, humidity))  
-      
-  else:
-    print('Failed to get reading. Try again!')  
-    sleep(10)
-
-  data = {"temp": temperature, "humidity": humidity}
-  firebase.patch('/sensor/dht', data)
 def setRelay(nyala):
   firebase.patch('/sensor/relay', {"isLoading":False})
   GPIO.setup(GPIO_RELAY, GPIO.OUT)  # GPIO Assign mode
@@ -57,14 +43,14 @@ def setRelay(nyala):
       GPIO.output(GPIO_RELAY, GPIO.HIGH) # mati
       
      
-def setRelayKipas(nyala):
-  firebase.patch('/sensor/relay1', {"manual":True})
-  GPIO.setup(PIN_KIPAS, GPIO.OUT)  # GPIO Assign mode
+def setRelaySpringkler(nyala):
+  firebase.patch('/control/relaySpringkler', {"manual":True})
+  GPIO.setup(PIN_SPRINGKLER, GPIO.OUT)  # GPIO Assign mode
   if nyala:
-      GPIO.output(PIN_KIPAS, GPIO.LOW) # nyala
+      GPIO.output(PIN_SPRINGKLER, GPIO.LOW) # nyala
       print("kipas hidup")
   else:
-      GPIO.output(PIN_KIPAS, GPIO.HIGH) # mati
+      GPIO.output(PIN_SPRINGKLER, GPIO.HIGH) # mati
       print("kipas mati")
 
 def setRelayAir(nyala):
@@ -91,11 +77,11 @@ def setManualisasi():
        setRelay(False)
        print("relay mati")
 
-def setKipasNyala():
-    if firebase.get('sensor/relay1','status'):
-       setRelayKipas(True)
+def setSpringklerNyala():
+    if firebase.get('control/relaySpringkler','status'):
+       setRelaySpringkler(True)
     else:
-       setRelayKipas(False)
+       setRelaySpringkler(False)
 
 def setAirNyala():
     if firebase.get('sensor/relay2','status'):
@@ -309,8 +295,7 @@ while True:
     try:
         firebase = firebase.FirebaseApplication('https://smart-greenhouse-92747.firebaseio.com/', None)
         while True:
-            # setSuhuGreenhouse()
-            setKipasNyala()
+            setSpringklerNyala()
             setAirNyala()
             if firebase.get('sensor/relay','manual')==True:
                setManualisasi()
