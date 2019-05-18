@@ -13,7 +13,7 @@ GPIO.setwarnings(False)
 
 
 
-
+  
 # ===== Definisi Pin GPIO====== #
 GPIO_RELAY = 18
 GPIO_RELAY1 = 27 
